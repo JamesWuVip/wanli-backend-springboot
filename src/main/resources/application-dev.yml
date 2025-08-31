@@ -1,0 +1,183 @@
+# 开发环境配置
+spring:
+  profiles:
+    active: dev
+  
+  # 数据源配置
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wanli_dev
+    username: ${DB_USER:wanli_user}
+    password: ${DB_PASSWORD:wanli_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+  
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+  
+  # Redis配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+  
+  # 缓存配置
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+      cache-null-values: false
+  
+  # 邮件配置
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+  
+  # Jackson配置
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+# 服务器配置
+server:
+  port: ${PORT:3000}
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+
+# 日志配置
+logging:
+  level:
+    com.wanli: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/wanli-backend-dev.log
+    max-size: 100MB
+    max-history: 30
+
+# 应用配置
+app:
+  # JWT配置
+  jwt:
+    secret: ${JWT_SECRET:wanli-education-platform-jwt-secret-key-for-development}
+    access-token-expiration: 86400000  # 24小时
+    refresh-token-expiration: 604800000  # 7天
+  
+  # 安全配置
+  security:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
+        - http://localhost:3001
+        - http://127.0.0.1:3000
+        - http://127.0.0.1:3001
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
+    
+    rate-limit:
+      enabled: true
+      requests-per-minute: 100
+      burst-capacity: 200
+  
+  # 文件存储配置
+  storage:
+    type: local
+    local:
+      upload-dir: ${UPLOAD_DIR:./uploads}
+      base-url: ${BASE_URL:http://localhost:3000}/files
+  
+  # 邮件模板配置
+  mail:
+    templates:
+      verification: classpath:templates/email-verification.html
+      password-reset: classpath:templates/password-reset.html
+    from: ${MAIL_FROM:noreply@wanli.edu}
+    from-name: 万里教育平台
+
+# Actuator配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# API文档配置
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  info:
+    title: 万里教育平台API
+    description: 万里教育平台后端服务API文档
+    version: 1.0.0
+    contact:
+      name: 开发团队
+      email: dev@wanli.edu

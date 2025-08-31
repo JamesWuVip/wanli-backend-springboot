@@ -1,0 +1,98 @@
+# 主配置文件
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  
+  # 应用信息
+  application:
+    name: wanli-backend
+  
+  # 国际化配置
+  messages:
+    basename: messages
+    encoding: UTF-8
+    cache-duration: 3600
+  
+  # 任务调度配置
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 20
+        queue-capacity: 100
+        keep-alive: 60s
+    scheduling:
+      pool:
+        size: 5
+  
+  # 事务配置
+  transaction:
+    default-timeout: 30
+    rollback-on-commit-failure: true
+
+# 全局配置
+app:
+  name: 万里教育平台
+  version: 1.0.0
+  description: 万里教育平台后端服务
+  
+  # 分页配置
+  pagination:
+    default-page-size: 20
+    max-page-size: 100
+  
+  # 验证码配置
+  captcha:
+    enabled: true
+    length: 6
+    expiration: 300  # 5分钟
+  
+  # 密码策略
+  password:
+    min-length: 8
+    max-length: 128
+    require-uppercase: true
+    require-lowercase: true
+    require-digit: true
+    require-special-char: false
+  
+  # 文件上传限制
+  upload:
+    allowed-types:
+      - image/jpeg
+      - image/png
+      - image/gif
+      - application/pdf
+      - application/msword
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    max-file-size: 10485760  # 10MB
+  
+  # 系统配置
+  system:
+    timezone: Asia/Shanghai
+    locale: zh_CN
+    date-format: yyyy-MM-dd
+    datetime-format: yyyy-MM-dd HH:mm:ss
+    
+  # 业务配置
+  business:
+    # 用户相关
+    user:
+      default-avatar: /images/default-avatar.png
+      max-login-attempts: 5
+      account-lock-duration: 1800  # 30分钟
+    
+    # 课程相关
+    course:
+      max-enrollment: 100
+      enrollment-deadline-days: 7
+    
+    # 班级相关
+    class:
+      max-students: 50
+      min-students: 5
+    
+    # 考勤相关
+    attendance:
+      check-in-window: 15  # 签到窗口期（分钟）
+      late-threshold: 10   # 迟到阈值（分钟）
